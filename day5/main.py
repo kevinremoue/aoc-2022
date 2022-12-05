@@ -1,38 +1,28 @@
 import numpy as np
 
-def get_index_last_item_from_row(row):
-    index = 0
-    count = len(row)-1
-    for i in reversed(range(len(row)-1)):
-        if row[i] != 0:
-            break
-        count -=1
-    return count
-
-
-def execute_move(move, matrix):
+def execute_move_part1(move, dict):
     format = move.split(" ")
     nb_move = int(format[1])
-    from_row = int(format[3])-1
-    to_row = int(format[5])-1
+    from_row = int(format[3])
+    to_row = int(format[5])
     for move in range(nb_move):
-        #get top crate:
-        from_last_item_index = get_index_last_item_from_row(matrix[from_row])
-        to_last_item_index = get_index_last_item_from_row(matrix[to_row])
-        #move crate:
-        print("Move crate from row " + str(from_row) + str(from_last_item_index) + " to " + str(to_row) + str(to_last_item_index))
-        
-        value = matrix[from_row][from_last_item_index]
-        value2 = matrix[to_row][to_last_item_index]
+        dict[to_row].append(dict[from_row][-1])
+        del dict[from_row][-1]
 
-        matrix[to_row][to_last_item_index] = value
-        matrix[from_row][from_last_item_index] = value2
+    return dict
 
-        print(matrix)
-    return matrix
 
-# input = open('day5/input.txt', 'r')
-input = open('day5/test.txt', 'r')
+def execute_move_part2(move, dict):
+    format = move.split(" ")
+    nb_move = int(format[1])
+    from_row = int(format[3])
+    to_row = int(format[5])
+    dict[to_row] += dict[from_row][-nb_move:]
+    del dict[from_row][-nb_move:]
+    return dict    
+
+input = open('day5/input.txt', 'r')
+# input = open('day5/test.txt', 'r')
 
 measures = input.read().split("\n\n")
 crates = measures[0].split("\n")
@@ -52,16 +42,26 @@ for i in range(len(crates)-1):
             matrix[i][j] = ord(tempo[1])
 
 matrix = np.rot90(matrix, k=1, axes=(1,0))
+
 print(matrix)
+
+#matrix into dict without 0
+dict = {}
+
+for i in range(len(crates)):
+    new_list = []
+    for j in range(len(matrix[i])):
+        if matrix[i][j] != 0:
+            new_list.append(matrix[i][j])
+    dict[i+1] = new_list
 
 
 for move in moves:
-    matrix = execute_move(move, matrix)
+    # dict = execute_move_part1(move, dict)
+    dict = execute_move_part2(move, dict)
 
+print(dict)
 
-part1 = 0
-part2 = 0
-
-print("-----results-----")
-print(part1)
-print(part2)
+char_dict = {}
+for i in range(len(dict)):
+    print(chr(int(dict[i+1][-1])))
