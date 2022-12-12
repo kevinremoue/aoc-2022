@@ -12,7 +12,7 @@ class Monkey():
         self.operation = operation
         self.division = division
 
-    def test_item(self, item):
+    def test_item(self, item, bored_level):
         #count as inspection
         self.nb_total_inspection += 1
 
@@ -33,9 +33,7 @@ class Monkey():
             case other:
                 print("Worry level calculation failed")
         #Apply Bored level
-        #no more //3, we must keep small numbers
-        gcd = math.gcd(*self.items)
-        item = item // gcd
+        item = item % bored_level
         return item
 
     def throw_item(self, item, index):
@@ -55,6 +53,9 @@ class Monkey():
         string = self.items
         return str(string)
 
+def get_bored_level(monkeys):
+    return math.lcm(*[int(monkey.division[0]) for monkey in monkeys])
+
 def get_business(monkeys):
     total = []
     for index, monkey in enumerate(monkeys):
@@ -68,55 +69,59 @@ def get_business(monkeys):
 #Init values
 rounds = 10000
 #array of monkeys for test input
-monkeys = []
-monkey0 = Monkey([79, 98], ["*", "19"], [23,2,3])
-monkeys.append(monkey0)
-
-monkey1 = Monkey([54, 65, 75, 74], ["+", "6"], [19,2,0])
-monkeys.append(monkey1)
-
-monkey2 = Monkey([79, 60, 97], ["*", "old"], [13,1,3])
-monkeys.append(monkey2)
-
-monkey3 = Monkey([74], ["+", "3"], [17,0,1])
-monkeys.append(monkey3)
-
-#array of monkeys
 # monkeys = []
-
-# monkey0 = Monkey([89, 84, 88, 78, 70], ["*", "5"], [7,6,7])
+# monkey0 = Monkey([79, 98], ["*", "19"], [23,2,3])
 # monkeys.append(monkey0)
 
-# monkey1 = Monkey([76, 62, 61, 54, 69, 60, 85], ["+", "1"], [17,0,6])
+# monkey1 = Monkey([54, 65, 75, 74], ["+", "6"], [19,2,0])
 # monkeys.append(monkey1)
 
-# monkey2 = Monkey([83, 89, 53], ["+", "8"], [11,5,3])
+# monkey2 = Monkey([79, 60, 97], ["*", "old"], [13,1,3])
 # monkeys.append(monkey2)
 
-# monkey3 = Monkey([95, 94, 85, 57], ["+", "4"], [13,0,1])
+# monkey3 = Monkey([74], ["+", "3"], [17,0,1])
 # monkeys.append(monkey3)
 
-# monkey4 = Monkey([82, 98], ["+", "7"], [19,5,2])
-# monkeys.append(monkey4)
+#array of monkeys
+monkeys = []
 
-# monkey5 = Monkey([69], ["+", "2"], [2,1,3])
-# monkeys.append(monkey5)
+monkey0 = Monkey([89, 84, 88, 78, 70], ["*", "5"], [7,6,7])
+monkeys.append(monkey0)
 
-# monkey6 = Monkey([82, 70, 58, 87, 59, 99, 92, 65], ["*", "11"], [5,7,4])
-# monkeys.append(monkey6)
+monkey1 = Monkey([76, 62, 61, 54, 69, 60, 85], ["+", "1"], [17,0,6])
+monkeys.append(monkey1)
 
-# monkey7 = Monkey([91, 53, 96, 98, 68, 82], ["*", "old"], [3,4,2])
-# monkeys.append(monkey7)
+monkey2 = Monkey([83, 89, 53], ["+", "8"], [11,5,3])
+monkeys.append(monkey2)
+
+monkey3 = Monkey([95, 94, 85, 57], ["+", "4"], [13,0,1])
+monkeys.append(monkey3)
+
+monkey4 = Monkey([82, 98], ["+", "7"], [19,5,2])
+monkeys.append(monkey4)
+
+monkey5 = Monkey([69], ["+", "2"], [2,1,3])
+monkeys.append(monkey5)
+
+monkey6 = Monkey([82, 70, 58, 87, 59, 99, 92, 65], ["*", "11"], [5,7,4])
+monkeys.append(monkey6)
+
+monkey7 = Monkey([91, 53, 96, 98, 68, 82], ["*", "old"], [3,4,2])
+monkeys.append(monkey7)
+
+
+bored_level = get_bored_level(monkeys)
+print("Bored level is ", bored_level)
 
 for i in range(rounds):
     #each rounds
-    print(i)
+    # print(i)
     for monkey in monkeys:
         #each turns in a round
         #take first item
         for index, item in enumerate(monkey.items):
             #multiply with operation
-            item = monkey.test_item(item)
+            item = monkey.test_item(item, bored_level)
             #test for division and get monkey number 
             nb_monkey = monkey.throw_item(item, index)
             #throw to the right monkey
