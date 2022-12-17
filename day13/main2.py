@@ -1,4 +1,5 @@
 import itertools as it
+import functools as ft
 
 # input = open('day13/test.txt', 'r').read().split("\n\n")
 input = open('day13/input.txt', 'r').read().split("\n\n")
@@ -35,23 +36,14 @@ def is_right_order(left, right):
         else:
             return is_right_order(left, [right])
 
-left = []
-right = []
+packets = []
 for line in input:
     tempo1,tempo2 = line.split("\n")
-    left.append(eval(tempo1))
-    right.append(eval(tempo2))
+    packets.append(eval(tempo1))
+    packets.append(eval(tempo2))
 
-indices = 0
-result = []
-for i in range(len(left)):
-    print("=== Pair", i+1, "===")
-    if is_right_order(left[i], right[i]) == -1:
-        print("=== Pair", i+1, " is OK ===")
-        indices = i+1
-        result.append(indices)
-    else: 
-        print("=== Pair", i+1, " is NOT OK ===")
+packets.append([[2]])
+packets.append([[6]])
 
-# print(result)
-print(sum(result))
+sorted_packets = sorted(packets, key=ft.cmp_to_key(is_right_order))
+print((sorted_packets.index([[2]])+1)*(sorted_packets.index([[6]])+1))
