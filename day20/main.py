@@ -1,7 +1,10 @@
 import copy 
 
-# input = open('day20/input.txt', 'r').read().rstrip().split("\n")
-input = open('day20/test.txt', 'r').read().rstrip().split("\n")
+
+#2692 too low
+
+input = open('day20/input.txt', 'r').read().rstrip().split("\n")
+# input = open('day20/test.txt', 'r').read().rstrip().split("\n")
 
 encfile = []
 
@@ -12,26 +15,35 @@ index_max = len(encfile)
 index = 0
 new_file = copy.deepcopy(encfile)
 
+def mix_file(encfile):
+    new_file = copy.deepcopy(encfile)
+    index_max = len(encfile)
+
+    for index, elt in enumerate(encfile):
+        new_file_number = new_file[new_file.index(elt)]
+        current_index = new_file.index(new_file_number)
+        # print("Processing", elt, "at index", current_index )
+        if current_index + elt == 0:
+            new_index = index_max-1
+        elif current_index + elt < 0:
+            new_index = ((current_index + elt) % index_max) -1
+        elif current_index + elt > index_max:
+            new_index = ((current_index + elt) % index_max) +1
+        else:
+            new_index = current_index + elt % index_max
+        # print("Going to index", new_index)
+        new_file.pop(current_index)
+        new_file.insert(new_index, elt)
+        # print("Result", new_file, "\n")
+    return new_file
+
 
 #MIXING:
-# print("Init", new_file)
+print("Init", encfile)
+new_file = mix_file(encfile)
 
+print(new_file)
 
-while index<index_max:
-    elt = encfile[index]
-    current_index = new_file.index(elt)
-    new_file.pop(current_index)
-    # print("Processing", elt,"at index",current_index )
-    if elt+current_index == 0:
-        new_file.insert(index_max-1,elt)
-    elif elt+current_index < 0:
-        new_file.insert(elt+index_max+current_index-1,elt)
-    elif elt+current_index > index_max:
-        new_file.insert(elt-index_max+current_index+1,elt)
-    else:
-        new_file.insert(elt+current_index,elt)
-    # print("Result", new_file, "\n")
-    index+=1
     
 #COUNTING:
 count = 0
